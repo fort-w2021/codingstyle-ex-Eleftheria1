@@ -8,6 +8,7 @@ Vereinfachen Sie folgende Funktion, ohne ihre Funktionsweise zu verändern:
 - nutzen Sie *early exits* und betonen Sie den *happy path*
 - vereinfachen Sie überflüssige oder redundante Fallunterscheidungen
 
+
 ```{r, def-swipe-right}
 # Decide whether to swipe right (express interest) or left (express disinterest)
 #   on somebody's profile.
@@ -15,7 +16,9 @@ Vereinfachen Sie folgende Funktion, ohne ihre Funktionsweise zu verändern:
 #   swiper: list object representing somebody swiping left or right in a dating app
 #   profile: list object representing the profile of the person who is being swiped left or right
 # output: TRUE/FALSE
-swipe_right <- function(swiper, profile) {
+
+
+swipe_right_smelly <- function(swiper, profile) {
   if (profile[["has_picture"]]) {
     if (profile[["picture_attractive"]]) {
       if (swiper[["sober"]]) {
@@ -41,6 +44,58 @@ swipe_right <- function(swiper, profile) {
   } else {
     stop("can't decide without a picture.")
   }
+}
+
+# checks swiper input
+check_swiper <- function(swiper) {
+  checkmate::assert_list(swiper, len = 2)
+  checkmate::assert_names(names(swiper), 
+                          permutation.of = c("sober","likes"))
+  checkmate::assert_flag(swiper[["sober"]])
+  checkmate::assert_character(swiper[["likes"]])
+}
+
+  
+# checks profile input
+check_profile <- function(profile) {
+  checkmate::assert_list(profile, len = 4)
+  checkmate::assert_names(names(profile), permutation.of = 
+                            c("has_picture", "picture_attractive",
+                              "rather_weird", "likes"))
+  checkmate::assert_flag(profile[["has_picture"]])
+  checkmate::assert_flag(profile[["picture_attractive"]])
+  checkmate::assert_flag(profile[["rather_weird"]])
+  checkmate::assert_character(profile[["likes"]])
+}
+
+# Decide whether to swipe right (express interest) or left (express disinterest)
+#   on somebody's profile.
+# inputs:
+#   swiper: list object representing somebody swiping left or right in a dating app
+#   profile: list object representing the profile of the person who is being swiped left or right
+# output: TRUE/FALSE
+swipe_right <- function(swiper, profile) {
+  # argument checks
+  check_swiper(swiper)
+  check_profile(profile)
+  
+  if (!profile[["has_picture"]]) {
+    stop("can't decide without a picture.")
+  }
+  if (!profile[["picture_attractive"]]) {
+    return(FALSE)
+  }
+  if (!swiper[["sober"]]) {
+    return(TRUE)
+  }
+  if (all(is.na(profile[["likes"]]))) {
+    stop("can't decide without informative profile.")
+  }
+  if (profile[["rather_weird"]]) {
+    return(FALSE)
+  }
+  ifelse(any(swiper[["likes"]] %in% profile[["likes"]]),
+         TRUE, FALSE)
 }
 ```
 
