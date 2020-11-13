@@ -49,19 +49,24 @@ swipe_right_smelly <- function(swiper, profile) {
 # checks swiper input
 check_swiper <- function(swiper) {
   checkmate::assert_list(swiper, len = 2)
-  checkmate::assert_names(names(swiper), 
-                          permutation.of = c("sober","likes"))
+  checkmate::assert_names(names(swiper),
+    permutation.of = c("sober", "likes")
+  )
   checkmate::assert_flag(swiper[["sober"]])
   checkmate::assert_character(swiper[["likes"]])
 }
 
-  
+
 # checks profile input
 check_profile <- function(profile) {
   checkmate::assert_list(profile, len = 4)
-  checkmate::assert_names(names(profile), permutation.of = 
-                            c("has_picture", "picture_attractive",
-                              "rather_weird", "likes"))
+  checkmate::assert_names(names(profile),
+    permutation.of =
+      c(
+        "has_picture", "picture_attractive",
+        "rather_weird", "likes"
+      )
+  )
   checkmate::assert_flag(profile[["has_picture"]])
   checkmate::assert_flag(profile[["picture_attractive"]])
   checkmate::assert_flag(profile[["rather_weird"]])
@@ -78,7 +83,7 @@ swipe_right <- function(swiper, profile) {
   # argument checks
   check_swiper(swiper)
   check_profile(profile)
-  
+
   if (!profile[["has_picture"]]) {
     stop("can't decide without a picture.")
   }
@@ -95,7 +100,8 @@ swipe_right <- function(swiper, profile) {
     return(FALSE)
   }
   ifelse(any(swiper[["likes"]] %in% profile[["likes"]]),
-         TRUE, FALSE)
+    TRUE, FALSE
+  )
 }
 ```
 
@@ -104,35 +110,51 @@ Benutzen Sie die folgenden Codebeispiele um zu prüfen ob Ihre modifizierte Funk
 
 ```{r, examples-swipe-right, error = TRUE}
 test_swipers <- list(
-  sober_swiper = list(sober = TRUE, 
-                      likes = c("penguins", "FORTRAN",  "casual sex")),
-  drunk_swiper = list(sober = FALSE, 
-                      likes = c("dogs", "yoga", "Markus Söder"))
+  sober_swiper = list(
+    sober = TRUE,
+    likes = c("penguins", "FORTRAN", "casual sex")
+  ),
+  drunk_swiper = list(
+    sober = FALSE,
+    likes = c("dogs", "yoga", "Markus Söder")
+  )
 )
 
 test_profiles <- list(
-  hot_1 = list(has_picture = TRUE, picture_attractive = TRUE,
-               rather_weird = FALSE, likes = "penguins"),
-  hot_2 = list(has_picture = TRUE, picture_attractive = TRUE,
-               rather_weird = FALSE, likes = "Pokemon"),
-  hotweird = list(has_picture = TRUE, picture_attractive = TRUE,
-                  rather_weird = TRUE, likes = "penguins"),
-  nothot_1 = list(has_picture = TRUE, picture_attractive = FALSE,
-                  rather_weird = FALSE, likes = "Markus Söder"),
-  nothot_2 = list(has_picture = TRUE, picture_attractive = FALSE,
-                  rather_weird = FALSE, likes = "cats"),
-  no_pic = list(has_picture = FALSE, picture_attractive = NA,
-                likes = c("hamsters", "yoga"))
+  hot_1 = list(
+    has_picture = TRUE, picture_attractive = TRUE,
+    rather_weird = FALSE, likes = "penguins"
+  ),
+  hot_2 = list(
+    has_picture = TRUE, picture_attractive = TRUE,
+    rather_weird = FALSE, likes = "Pokemon"
+  ),
+  hotweird = list(
+    has_picture = TRUE, picture_attractive = TRUE,
+    rather_weird = TRUE, likes = "penguins"
+  ),
+  nothot_1 = list(
+    has_picture = TRUE, picture_attractive = FALSE,
+    rather_weird = FALSE, likes = "Markus Söder"
+  ),
+  nothot_2 = list(
+    has_picture = TRUE, picture_attractive = FALSE,
+    rather_weird = FALSE, likes = "cats"
+  ),
+  no_pic = list(
+    has_picture = FALSE, picture_attractive = NA,
+    likes = c("hamsters", "yoga")
+  )
 )
 
 # check all combinations:
-for(swiper in names(test_swipers)) {
-  for(profile in names(test_profiles)) {
-    cat("Does", swiper, "swipe right on", profile, "?",
-        try(swipe_right(test_swipers[[swiper]], test_profiles[[profile]]), silent = TRUE),
-        "\n")
+for (swiper in names(test_swipers)) {
+  for (profile in names(test_profiles)) {
+    cat(
+      "Does", swiper, "swipe right on", profile, "?",
+      try(swipe_right(test_swipers[[swiper]], test_profiles[[profile]]), silent = TRUE),
+      "\n"
+    )
   }
 }
 ```
-
-
